@@ -10,7 +10,7 @@
 - [ ] File uploads. Support local.
 - [x] Swagger.
 - [x] E2E and units tests.
-- [ ] Docker.
+- [x] Docker.
 
 ## Quick start
 
