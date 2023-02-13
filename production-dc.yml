@@ -1,0 +1,52 @@
+version: '2.3'
+
+services:
+  nest_api:
+    build: .
+    container_name: nest_api
+    restart: 'unless-stopped'
+    ports:
+      - 4400:4400
+    env_file:
+      - ./.env
+    depends_on:
+      - postgres_14
+      - redis
+    networks:
+      - nest_networks
+
+  migration:
+    build: .
+    env_file:
+      - ./.env
+    command: './wait-for-it.sh nest_postgres:5432 -- yarn run migration:run'
+    depends_on:
+      - postgres
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: nest_redis
+    restart: 'unless-stopped'
+    command: redis-server --save 20 1 --loglevel warning
+    networks:
+      - nest_networks
+
+  postgres_14:
+    image: postgres:14
+    container_name: nest_postgres
+    command: ['postgres', '-c', 'log_statement=all']
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=nest_db
+    ports:
+      - 5429:5432
+    volumes:
+      - ./mount-data:/var/lib/postgresql/data
+    networks:
+      - nest_networks
+
+networks:
+  nest_networks:
+    name: nest_networks

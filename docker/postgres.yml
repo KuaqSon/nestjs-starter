@@ -1,0 +1,22 @@
+version: '2.3'
+
+services:
+  postgres_14:
+    image: postgres:14
+    container_name: postgres_14
+    command: ['postgres', '-c', 'log_statement=all']
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=nest
+    ports:
+      - 5439:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - postgres_14
+networks:
+  postgres_14:
+    name: nest_networks
+    external: true
