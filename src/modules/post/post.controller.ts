@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Delete, Query, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -6,9 +6,7 @@ import { Auth, UUIDParam } from 'src/decorators/http.decorators';
 import { UserRoleEnum } from 'src/roles/roles.enum';
 import { FindArgs } from 'src/shared/dtos/common.dtos';
 import { ApiTags } from '@nestjs/swagger';
-import { SentryInterceptor } from 'src/interceptor/sentry.interceptor';
 
-@UseInterceptors(SentryInterceptor)
 @Controller('post')
 @ApiTags('post')
 export class PostController {

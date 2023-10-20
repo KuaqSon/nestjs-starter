@@ -1,9 +1,11 @@
-import { User } from 'src/modules/user/user.entity';
+import { UserEntity } from 'src/modules/user/user.entity';
 import { AuditableTable } from 'src/shared/entities/auditable.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class Post extends AuditableTable {
+@Entity({
+  name: 'Post',
+})
+export class PostEntity extends AuditableTable {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -20,7 +22,7 @@ export class Post extends AuditableTable {
   @Column({ type: 'timestamptz', nullable: false })
   publishAt: Date;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => UserEntity, (user) => user.id)
   @JoinColumn()
-  user: User;
+  user: UserEntity;
 }

@@ -4,8 +4,8 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from 'src/modules/auth/strategies/jwt.strategy';
-import { PublicStrategy } from 'src/modules/auth/strategies/public.strategy';
 import { UserModule } from 'src/modules/user/user.module';
+import { PublicStrategy } from 'src/modules/auth/strategies/public.strategy';
 
 @Module({
   imports: [

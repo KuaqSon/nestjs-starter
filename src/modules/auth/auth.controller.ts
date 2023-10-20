@@ -1,11 +1,9 @@
-import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/decorators/http.decorators';
-import { SentryInterceptor } from 'src/interceptor/sentry.interceptor';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { AuthCredentialsDto, CreateCredentialDto } from 'src/modules/auth/dto/credentials.dto';
 
-@UseInterceptors(SentryInterceptor)
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {

@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { UpdateUserDto } from 'src/modules/user/dto/update-user.dto';
-import { User } from 'src/modules/user/user.entity';
+import { UserEntity } from 'src/modules/user/user.entity';
 import { PaginationResult, genPaginationResult } from 'src/shared/dtos/common.dtos';
 import { HttpRequestContextService } from 'src/shared/http-request-context/http-request-context.service';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
@@ -19,8 +19,8 @@ export class UserService {
   private readonly logger = new Logger(UserService.name);
 
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
     private readonly httpContext: HttpRequestContextService
   ) {}
 
@@ -28,13 +28,13 @@ export class UserService {
     return await this.usersRepository.save(this.usersRepository.create(createUserDto));
   }
 
-  async findOne(fields: EntityCondition<User>): Promise<User> {
+  async findOne(fields: EntityCondition<UserEntity>): Promise<UserEntity> {
     return this.usersRepository.findOne({
       where: fields,
     });
   }
 
-  async getAllUser(args: UserFindArgs): Promise<PaginationResult<User>> {
+  async getAllUser(args: UserFindArgs): Promise<PaginationResult<UserEntity>> {
     const { limit, offset, q, roles, isActive, order } = args;
     const userId = this.httpContext.getUser().id;
 

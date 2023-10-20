@@ -9,7 +9,6 @@ COPY . .
 RUN ls -a
 
 RUN yarn install --frozen-lockfile
-RUN yarn add @nestjs/cli@9.1.5
 RUN yarn run build
 
 CMD ["node", "dist/main"]

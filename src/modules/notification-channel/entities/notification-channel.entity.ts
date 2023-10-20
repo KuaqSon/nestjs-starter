@@ -7,8 +7,10 @@ export enum NotificationChannelTypeEnum {
   TELEGRAM = 'TELEGRAM',
 }
 
-@Entity()
-export class NotificationChannel extends AuditableTable {
+@Entity({
+  name: 'NotificationChannel',
+})
+export class NotificationChannelEntity extends AuditableTable {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({ description: 'id' })
   id: string;

@@ -1,4 +1,11 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { CreateCredentialDto, AuthCredentialsDto } from 'src/modules/auth/dto/credentials.dto';
@@ -18,18 +25,11 @@ export class AuthService {
   ) {}
 
   async getCurrentUser(): Promise<UserResDto> {
+    throw new Error('test error');
     const userId = this.httpContext.getUser().id;
     const user = await this.usersService.findOne({ id: userId });
     if (!user.isActive) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          errors: {
-            password: 'inactivated account',
-          },
-        },
-        HttpStatus.FORBIDDEN
-      );
+      throw new ForbiddenException('inactivated account');
     }
 
     const { id, email, fullName, roles } = user;
@@ -50,25 +50,19 @@ export class AuthService {
     });
     const isValidPassword = await bcrypt.compare(loginDto.password, user.password);
 
-    if (isValidPassword) {
-      const token = await this.jwtService.sign({
-        id: user.id,
-        email: user.email,
-        roles: user.roles,
-      });
-
-      return { token };
-    } else {
-      throw new HttpException(
-        {
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            password: 'incorrectPassword',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY
-      );
+    if (!isValidPassword) {
+      throw new UnprocessableEntityException('Incorrect password');
     }
+
+    const token = this.jwtService.sign({
+      id: user.id,
+      email: user.email,
+      roles: user.roles,
+    });
+
+    return {
+      token,
+    };
   }
 
   async register(userDto: CreateCredentialDto): Promise<void> {

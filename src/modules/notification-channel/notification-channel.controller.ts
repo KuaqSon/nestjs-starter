@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { NotificationChannelService } from './notification-channel.service';
 import { CreateNotificationChannelDto } from './dto/create-notification-channel.dto';
 import { UpdateNotificationChannelDto } from './dto/update-notification-channel.dto';
@@ -7,9 +7,7 @@ import { PaginateNotificationChannelDto } from 'src/modules/notification-channel
 import { FindArgs } from 'src/shared/dtos/common.dtos';
 import { Auth } from 'src/decorators/http.decorators';
 import { UserRoleEnum } from 'src/roles/roles.enum';
-import { SentryInterceptor } from 'src/interceptor/sentry.interceptor';
 
-@UseInterceptors(SentryInterceptor)
 @Controller('notification-channel')
 @ApiTags('notification-channel')
 export class NotificationChannelController {

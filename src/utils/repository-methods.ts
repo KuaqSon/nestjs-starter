@@ -1,6 +1,6 @@
 import { ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { DUPLICATED_ROW_VIOLATION_CODE } from 'src/shared/constant/error-code';
-import { FindOptionsWhere, ObjectID, Repository } from 'typeorm';
+import { FindOptionsWhere, ObjectId, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export async function createOrFail<T>(repo: Repository<T>, entity: T, failedMessage: string) {
@@ -17,7 +17,7 @@ export async function createOrFail<T>(repo: Repository<T>, entity: T, failedMess
 
 export async function updateOrFail<T>(
   repo: Repository<T>,
-  criteria: string | number | Date | string[] | ObjectID | number[] | Date[] | ObjectID[] | FindOptionsWhere<T>,
+  criteria: string | number | Date | string[] | ObjectId | number[] | Date[] | ObjectId[] | FindOptionsWhere<T>,
   partialEntity: QueryDeepPartialEntity<T>,
   failedMessage: string
 ) {

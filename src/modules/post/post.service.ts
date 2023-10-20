@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Post } from 'src/modules/post/entities/post.entity';
+import { PostEntity } from 'src/modules/post/entities/post.entity';
 import { FindArgs, paging } from 'src/shared/dtos/common.dtos';
 import { HttpRequestContextService } from 'src/shared/http-request-context/http-request-context.service';
 import { FindOptionsOrder, Repository } from 'typeorm';
@@ -10,8 +10,8 @@ import { UpdatePostDto } from './dto/update-post.dto';
 @Injectable()
 export class PostService {
   constructor(
-    @InjectRepository(Post)
-    private postRepository: Repository<Post>,
+    @InjectRepository(PostEntity)
+    private postRepository: Repository<PostEntity>,
     private readonly httpContext: HttpRequestContextService
   ) {}
 
@@ -30,7 +30,7 @@ export class PostService {
   findAll(args: FindArgs) {
     const { limit: take = 10, offset: skip = 0, order } = args;
 
-    const orderFindOptions: FindOptionsOrder<Post> = {
+    const orderFindOptions: FindOptionsOrder<PostEntity> = {
       createdAt: order === 'createdAt:ASC' ? 'ASC' : 'DESC',
     };
 
@@ -55,7 +55,7 @@ export class PostService {
     await this.postRepository.update(id, {
       ...updatePostDto,
       updatedBy,
-    } as Post);
+    } as PostEntity);
   }
 
   async remove(id: string) {

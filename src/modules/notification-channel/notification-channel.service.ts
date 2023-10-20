@@ -8,10 +8,10 @@ import { Queue } from 'bull';
 const XMLHttpRequest = require('xhr2');
 
 import {
-  NotificationChannel,
+  NotificationChannelEntity,
   NotificationChannelTypeEnum,
 } from 'src/modules/notification-channel/entities/notification-channel.entity';
-import { User } from 'src/modules/user/user.entity';
+import { UserEntity } from 'src/modules/user/user.entity';
 
 import { FindArgs, paging } from 'src/shared/dtos/common.dtos';
 import { HttpRequestContextService } from 'src/shared/http-request-context/http-request-context.service';
@@ -22,10 +22,10 @@ import { UpdateNotificationChannelDto } from './dto/update-notification-channel.
 @Injectable()
 export class NotificationChannelService {
   constructor(
-    @InjectRepository(NotificationChannel)
-    private notificationChannelRepository: Repository<NotificationChannel>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(NotificationChannelEntity)
+    private notificationChannelRepository: Repository<NotificationChannelEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     @InjectQueue('notification-channel') private readonly notificationQueue: Queue,
     private readonly httpContext: HttpRequestContextService
   ) {}
@@ -46,7 +46,7 @@ export class NotificationChannelService {
   findAll(args: FindArgs) {
     const { limit: take = 10, offset: skip = 0, order } = args;
 
-    const orderFindOptions: FindOptionsOrder<NotificationChannel> = {
+    const orderFindOptions: FindOptionsOrder<NotificationChannelEntity> = {
       createdAt: order === 'createdAt:ASC' ? 'ASC' : 'DESC',
     };
 
@@ -71,7 +71,7 @@ export class NotificationChannelService {
     await this.notificationChannelRepository.update(id, {
       ...updateNotificationChannelDto,
       updatedBy: user?.id,
-    } as NotificationChannel);
+    } as NotificationChannelEntity);
   }
 
   async remove(id: string) {
@@ -98,7 +98,7 @@ export class NotificationChannelService {
     }
   }
 
-  async pushMessageToSlack(notificationChannel: NotificationChannel, text: string): Promise<void> {
+  async pushMessageToSlack(notificationChannel: NotificationChannelEntity, text: string): Promise<void> {
     const { webhooks } = notificationChannel.metadata as any;
     if (!webhooks) {
       return;
@@ -118,7 +118,7 @@ export class NotificationChannelService {
     });
   }
 
-  async pushMessageToTelegram(notificationChannel: NotificationChannel, text: string): Promise<void> {
+  async pushMessageToTelegram(notificationChannel: NotificationChannelEntity, text: string): Promise<void> {
     const { apiToken, chatId } = notificationChannel.metadata as any;
     if (!apiToken || !chatId) {
       return;

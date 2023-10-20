@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
 
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -11,9 +11,6 @@ import { UserFindArgs } from 'src/modules/user/dto/user-find-args.dto';
 import { UserChangePassDto } from 'src/modules/user/dto/change-pass-user.dto';
 import { UpdateProfileDto } from 'src/modules/user/dto/update-profile.dto';
 
-import { SentryInterceptor } from 'src/interceptor/sentry.interceptor';
-
-@UseInterceptors(SentryInterceptor)
 @ApiTags('user')
 @Controller('user')
 export class UserController {

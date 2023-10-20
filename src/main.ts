@@ -1,27 +1,44 @@
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { useContainer } from 'class-validator';
+import { ValidationError, useContainer } from 'class-validator';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { AppModule } from 'src/app.module';
-import { TransformInterceptor } from 'src/interceptor/transform.interceptor';
 
 import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
+import { SentryFilter } from 'src/utils/exceptions/sentry.filter';
+import { AspectLoggerInterceptor } from 'src/interceptor/aspect-logger.interceptor';
+import { AllExceptionsFilter } from 'src/utils/exceptions/all-exceptions-filter';
+import { ResponseInterceptor } from 'src/interceptor/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService);
+  const reflector = app.get(Reflector);
+  const httpAdapterHost = app.get(HttpAdapterHost);
 
   app.enableShutdownHooks();
 
-  app.useGlobalInterceptors(new TransformInterceptor());
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  app.useGlobalInterceptors(new LoggerErrorInterceptor());
-
   app.useLogger(app.get(Logger));
+
+  app.useGlobalFilters(new SentryFilter(httpAdapterHost.httpAdapter));
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+  app.useGlobalInterceptors(new AspectLoggerInterceptor());
+  app.useGlobalInterceptors(new ResponseInterceptor());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      exceptionFactory: (validationErrors: ValidationError[] = []) =>
+        new BadRequestException(validationErrors.map((error) => Object.values(error.constraints).join(', '))),
+    })
+  );
 
   const isProduction = configService.get('nodeEnv') === 'production';
 

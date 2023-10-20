@@ -3,6 +3,27 @@ import { Type } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 import { FindManyOptions, Repository } from 'typeorm';
 
+export class ResponseDto<T> {
+  @ApiProperty()
+  result: T;
+
+  @ApiProperty({
+    required: false,
+    default: [],
+  })
+  errorDetails?: string | string[] = [];
+
+  @ApiProperty({
+    required: false,
+  })
+  requestId?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  stack?: object;
+}
+
 /**
  * Default find arguments.
  */

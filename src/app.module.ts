@@ -17,10 +17,8 @@ import { HttRequestContextMiddleware } from 'src/shared/http-request-context/htt
 import { HttRequestContextModule } from 'src/shared/http-request-context/http-request-context.module';
 import { RequestIdHeaderMiddleware } from 'src/shared/middlewares/request-id-header.middleware';
 import { DataSource } from 'typeorm';
-
-import { NotificationChannelModule } from './modules/notification-channel/notification-channel.module';
-
-import { PostModule } from './modules/post/post.module';
+import { NotificationChannelModule } from 'src/modules/notification-channel/notification-channel.module';
+import { PostModule } from 'src/modules/post/post.module';
 
 @Module({
   imports: [

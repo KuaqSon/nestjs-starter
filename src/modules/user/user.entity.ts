@@ -9,10 +9,12 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRoleEnum } from 'src/roles/roles.enum';
-import { Post } from 'src/modules/post/entities/post.entity';
+import { PostEntity } from 'src/modules/post/entities/post.entity';
 
-@Entity()
-export class User {
+@Entity({
+  name: 'User',
+})
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({ description: 'userID' })
   id: string;
@@ -45,7 +47,7 @@ export class User {
   @Column({ default: false })
   isConfirm: boolean;
 
-  @OneToMany(() => Post, (post) => post.id)
+  @OneToMany(() => PostEntity, (post) => post.id)
   @JoinColumn()
-  posts: Post[];
+  posts: PostEntity[];
 }
